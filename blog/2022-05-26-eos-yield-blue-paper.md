@@ -35,6 +35,10 @@ In this paper, we will attempt to show with objective data the success of simila
 
 ## [📄 Download the Yield+ Blue Paper](https://eosn.foundation/wp-content/uploads/2022/05/Yield-English.pdf)
 
+https://eosnetwork.com/blog/eos-yield-blue-paper/
+
+![eos-yield-blue-paper](https://user-images.githubusercontent.com/550895/172065039-e1bbb0e7-5c9c-400b-9a40-e3da18d686e0.png)
+
 ## EOS Network
 The EOS Network is a 3rd generation blockchain platform powered by the EOS VM, a low-latency, highly performant, and extensible WebAssembly engine for deterministic execution of near feeless transactions; purpose-built for enabling optimal web3 user and developer experiences. EOS is the flagship blockchain and financial center of the EOSIO protocol, serving as the driving force behind multi-chain collaboration and public goods funding for tools and infrastructure through the EOS Network Foundation (ENF).
 

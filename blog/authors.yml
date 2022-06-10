@@ -1,17 +1,11 @@
-endi:
-  name: Endilie Yacop Sucipto
-  title: Maintainer of Docusaurus
-  url: https://github.com/endiliey
-  image_url: https://github.com/endiliey.png
+denis:
+  name: Denis Carriere
+  title: Core team member of Yield+
+  url: https://github.com/DenisCarriere
+  image_url: https://github.com/DenisCarriere.png
 
-yangshun:
-  name: Yangshun Tay
-  title: Front End Engineer @ Facebook
-  url: https://github.com/yangshun
-  image_url: https://github.com/yangshun.png
-
-slorber:
-  name: Sébastien Lorber
-  title: Docusaurus maintainer
-  url: https://sebastienlorber.com
-  image_url: https://github.com/slorber.png
+enf:
+  name: EOS Network Foundation
+  title: Sponsor of Yield+
+  url: https://github.com/eosnetworkfoundation
+  image_url: https://github.com/eosnetworkfoundation.png

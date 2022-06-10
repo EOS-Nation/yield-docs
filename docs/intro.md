@@ -2,46 +2,18 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Docusaurus in less than 5 minutes**.
+## TLDR
 
-## Getting Started
+Yield+ is a reward program to attract DeFi dApps that have their own tokenomics for generating yield for their dApp's users. Yield+ itself is not directly generating yield for individual users. Individuals can earn yield by using the dApps that Yield+ is designed to attract.
 
-Get started by **creating a new site**.
+It can be considered a promotional program or "liquidity incentive/reward program" that pairs well with the EVM launch as both are focused on growing the dApp ecosystem and TVL on EOS. One draws the attention of dApps (Yield+), the other faciliates the participation of dApps outside of EOS (EVM). Native EOS dApps can participate, as well.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+It is a effectively incentive based on the True TVL a dApp is bringing into EOS. The application process is to identify the qualifying TVL tier of the dApp, provide information on why a dApp may not qualify, as well as filter out attempts at gaming the reward. The True TVL of each dApp will be automatically and routinely measured to determine the reward tier it achieves. Each dApp can move fluidly up and down through reward tiers based on the True TVL measurement.
 
-### What you'll need
+It will be necessary (and possible via accompanying, recurrent data analysis) for the community to evaluate the program and weigh whether or not it is of benefit to the EOS ecosystem in effectivly attracting dApps and growing TVL, as well as what measures should be taken to continue, modify, or discontinue the reward program.
 
-- [Node.js](https://nodejs.org/en/download/) version 14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+The Yield+ Blue Paper provides in detail Research, Analysis, Recommendations, Proposals, Deliverables, Justification, and Discussions on things the community should consider when evaluating the program; e.g., Funding Frequency and Sources presented in the Treasury Recommendations - especially if the program is considered effective and worth continuing.
 
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+The Table of Contents can help readers move quickly to the information they desire most, including summaries, discussions, recommendations, and proposals.

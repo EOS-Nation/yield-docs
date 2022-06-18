@@ -110,13 +110,14 @@ cleos push action oracle.yield deltoken '["EOS"]' -p oracle.yield
 ### params
 
 - `{time_point_sec} period` - (primary key) period at time
-- `{int} period` - block number used for TAPOS
 - `{name} protocol` - protocol contract
+- `{name} category` - protocol category
 - `{set<name>} contracts.eos` - additional supporting EOS contracts
 - `{set<string>} contracts.evm` - additional supporting EVM contracts
 - `{vector<asset>} balances` - asset balances
 - `{vector<asset>} prices` - currency prices
-- `{TVL} tvl` - reported TVL averaged value in EOS & USD
+- `{asset} tvl` - reported TVL averaged value in EOS
+- `{asset} usd` - reported TVL averaged value in USD
 
 ### example
 
@@ -338,6 +339,7 @@ $ cleos push action oracle.yield updateall '[myoracle, 20]' -p myoracle
 
 - `{name} oracle` - oracle initiated update
 - `{name} protocol` - protocol updated
+- `{name} category` - protocol category
 - `{set<name>} contracts` - EOS contracts
 - `{set<string>} evm` - EVM contracts
 - `{time_point_sec} period` - time period
@@ -352,6 +354,7 @@ $ cleos push action oracle.yield updateall '[myoracle, 20]' -p myoracle
 {
     "oracle": "myoracle",
     "protocol": "myprotocol",
+    "category": "dexes",
     "contracts": ["myprotocol"],
     "evm": [],
     "period": "2022-06-16T01:40:00",
@@ -370,13 +373,12 @@ $ cleos push action oracle.yield updateall '[myoracle, 20]' -p myoracle
 
 ### params
 
-- `{name} oracle` - oracle
-- `{name} [receiver=""]` - (optional) receiver of rewards (default=oracle)
+- `{name} oracle` - oracle claiming rewards
 
 ### Example
 
 ```bash
-$ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
+$ cleos push action oracle.yield claim '[myoracle]' -p myoracle
 ```
 
 ## ACTION `claimlog`
@@ -387,8 +389,7 @@ $ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
 
 ### params
 
-- `{name} protocol` - protocol
-- `{name} receiver` - receiver of rewards
+- `{name} oracle` - oracle account which received rewards
 - `{extended_asset} claimed` - claimed funds
 
 ### Example
@@ -396,7 +397,6 @@ $ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
 ```json
 {
     "protocol": "myprotocol",
-    "receiver": "myreceiver",
     "claimed": {"contract": "eosio.token", "quantity": "0.5500 EOS"}
 }
 ```

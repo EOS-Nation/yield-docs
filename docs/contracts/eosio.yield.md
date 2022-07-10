@@ -20,7 +20,7 @@ Yield+ is a Rewards system that incentivizes DeFi protocols to retain long-term 
 
 ```bash
 # register protocol
-$ cleos push action eosio.yield regprotocol '[protocol, [{"key": "url", "value": "https://myprotocol.com"}]]' -p protocol
+$ cleos push action eosio.yield regprotocol '[protocol, dexes, [{"key": "name", "value": "My Protocol"}, {"key": "website", "value": "https://myprotocol.com"}]]' -p protocol
 
 # set additional protocol contracts
 # > action can only be called during [status="pending"]
@@ -50,7 +50,7 @@ $ cleos push action eosio.yield deny '[protocol]' -p eosio.yield@admin
 
 ```bash
 # report protocol TVL to Yield+
-$ cleos push action eosio.yield report '[protocol, "2021-04-12T12:20:00", <TVL USD>, <TVL EOS>]' -p oracle.yield
+cleos push action eosio.yield report '[protocol, "2022-05-13T00:00:00", 600, "200000.0000 EOS", "300000.0000 USD"]' -p oracle.yield
 ```
 
 ## Table of Content
@@ -61,6 +61,7 @@ $ cleos push action eosio.yield report '[protocol, "2021-04-12T12:20:00", <TVL U
 - [ACTION `init`](#action-init)
 - [ACTION `setrate`](#action-setrate)
 - [ACTION `regprotocol`](#action-regprotocol)
+- [ACTION `setmetakey`](#action-setmetakey)
 - [ACTION `unregister`](#action-unregister)
 - [ACTION `setcontracts`](#action-setcontracts)
 - [ACTION `setevm`](#action-setevm)
@@ -71,6 +72,12 @@ $ cleos push action eosio.yield report '[protocol, "2021-04-12T12:20:00", <TVL U
 - [ACTION `rewardslog`](#action-rewardslog)
 - [ACTION `claim`](#action-claim)
 - [ACTION `claimlog`](#action-claimlog)
+- [ACTION `statuslog`](#action-statuslog)
+- [ACTION `contractslog`](#action-contractslog)
+- [ACTION `categorylog`](#action-categorylog)
+- [ACTION `createlog`](#action-createlog)
+- [ACTION `eraselog`](#action-eraselog)
+- [ACTION `metadatalog`](#action-metadatalog)
 
 ## TABLE `config`
 
@@ -88,7 +95,7 @@ $ cleos push action eosio.yield report '[protocol, "2021-04-12T12:20:00", <TVL U
     "annual_rate": 500,
     "min_tvl_report": "200000.0000 EOS",
     "max_tvl_report": "6000000.0000 EOS",
-    "rewards": {"symbol": "4,EOS", "contract": "eosio.token"},
+    "rewards": {"sym": "4,EOS", "contract": "eosio.token"},
     "oracle_contract": "oracle.yield",
     "admin_contract": "admin.yield"
 }
@@ -113,8 +120,8 @@ $ cleos push action eosio.yield report '[protocol, "2021-04-12T12:20:00", <TVL U
 - `{name} protocol` - primary protocol contract
 - `{name} status="pending"` - status (`pending/active/denied`)
 - `{name} category` - protocol category (ex: `dexes/lending/staking`)
-- `{set<name>} contracts.eos` - additional supporting EOS contracts
-- `{set<string>} contracts.evm` - additional supporting EVM contracts
+- `{set<name>} contracts` - additional supporting EOS contracts
+- `{set<string>} evm` - additional supporting EVM contracts
 - `{asset} tvl` - reported TVL averaged value in EOS
 - `{asset} usd` - reported TVL averaged value in USD
 - `{extended_asset} balance` - balance available to be claimed
@@ -136,7 +143,7 @@ $ cleos push action eosio.yield report '[protocol, "2021-04-12T12:20:00", <TVL U
     "tvl": "200000.0000 EOS",
     "usd": "300000.0000 USD",
     "balance": {"quantity": "2.5000 EOS", "contract": "eosio.token"},
-    "metadata": [{"key": "type", "value": "swap"}, {"key": "url", "value": "https://myprotocol.com"}],
+    "metadata": [{"key": "name", "value": "My Protocol"}, {"key": "website", "value": "https://myprotocol.com"}],
     "created_at": "2022-05-13T00:00:00",
     "updated_at": "2022-05-13T00:00:00",
     "claimed_at": "1970-01-01T00:00:00",
@@ -146,7 +153,7 @@ $ cleos push action eosio.yield report '[protocol, "2021-04-12T12:20:00", <TVL U
 
 ## ACTION `init`
 
-> Initialize Yield+ rewards contract
+> Initialize the rewards contract
 
 - **authority**: `get_self()`
 
@@ -164,7 +171,7 @@ $ cleos push action eosio.yield init '[["4,EOS", "eosio.token"], oracle.yield, a
 
 ## ACTION `setrate`
 
-> Set rewards rate
+> Set TVL rewards rate at {{annual_rate}} basis points.
 
 - **authority**: `get_self()`
 
@@ -182,7 +189,25 @@ $ cleos push action eosio.yield setrate '[500, "200000.0000 EOS", "6000000.0000 
 
 ## ACTION `regprotocol`
 
-> Registry protocol
+> Register the {{protocol}} protocol.
+
+- **authority**: `protocol`
+
+### params
+
+- `{name} protocol` - protocol main contract
+- `{name} category` - protocol category (dexes/lending/yield)
+- `{map<name, string>} metadata` - (optional) key/value
+
+### Example
+
+```bash
+$ cleos push action eosio.yield regprotocol '[myprotocol, dexes, [{"key": "website", "value":"https://myprotocol.com"}]]' -p myprotocol
+```
+
+## ACTION `setmetadata`
+
+> Set the metadata for the {{protocol}} protocol.
 
 - **authority**: `protocol` OR `admin.yield`
 
@@ -194,12 +219,30 @@ $ cleos push action eosio.yield setrate '[500, "200000.0000 EOS", "6000000.0000 
 ### Example
 
 ```bash
-$ cleos push action eosio.yield regprotocol '[myprotocol, [{"key": "url", "value":"https://myprotocol.com"}]]' -p myprotocol
+$ cleos push action eosio.yield setmetadata '[myprotocol, [{"key": "website", "value":"https://myprotocol.com"}]]' -p myprotocol
+```
+
+## ACTION `setmetakey`
+
+> Set the {{key}} metadata key to {{value}}.
+
+- **authority**: `protocol` OR `admin.yield`
+
+### params
+
+- `{name} protocol` - protocol main contract
+- `{name} key` - metakey (ex: name/website/description)
+- `{string} [value=null]` - (optional) metakey value (if empty, will erase metakey)
+
+### Example
+
+```bash
+$ cleos push action eosio.yield setmetakey '[myprotocol, website, "https://myprotocol.com"]' -p myprotocol
 ```
 
 ## ACTION `unregister`
 
-> Un-registry protocol
+> Unregister the {{protocol}} protocol.
 
 - **authority**: `protocol`
 
@@ -215,7 +258,7 @@ $ cleos push action eosio.yield unregister '[myprotocol]' -p myprotocol
 
 ## ACTION `setcontracts`
 
-> Set EOS contracts
+> Sets the smart contracts for the {{protocol}} protocol.
 
 - **authority**: (`protocol` AND `contracts`) OR `admin.yield`
 
@@ -232,7 +275,7 @@ $ cleos push action eosio.yield setcontracts '[myprotocol, [myvault]]' -p myprot
 
 ## ACTION `setevm`
 
-> Set EVM contracts
+> Sets EVM contracts for the {{protocol}} protocol.
 
 - **authority**: (`protocol` AND `evm`) OR `admin.yield`
 
@@ -249,7 +292,7 @@ $ cleos push action eosio.yield setevm '[myprotocol, ["0x2f9ec37d6ccfff1cab21733
 
 ## ACTION `approve`
 
-> Approve protocol
+> Approves the {{protocol}} protocol for the Yield+ rewards program.
 
 - **authority**: `admin.yield`
 
@@ -265,7 +308,7 @@ $ cleos push action eosio.yield approve '[myprotocol]' -p admin.yield
 
 ## ACTION `setcategory`
 
-> Set protocol category
+> Sets the category of the {{protocol}} protocol.
 
 - **authority**: `admin.yield`
 
@@ -282,7 +325,7 @@ $ cleos push action eosio.yield setcategory '[myprotocol, dexes]' -p admin.yield
 
 ## ACTION `deny`
 
-> Deny protocol
+> Denies the {{protocol}} protocol for the Yield+ rewards program.
 
 - **authority**: `admin.yield`
 
@@ -298,7 +341,7 @@ $ cleos push action eosio.yield deny '[myprotocol]' -p admin.yield
 
 ## ACTION `claim`
 
-> Claim TVL rewards
+> Claims the Yield+ rewards for the {{protocol}} protocol.
 
 - **authority**: `protocol`
 
@@ -319,7 +362,7 @@ $ cleos push action eosio.yield claim '[myprotocol, myreceiver]' -p myprotocol
 
 ## ACTION `claimlog`
 
-> Claim logging
+> Generates a log each time Yield+ rewards are claimed.
 
 - **authority**: `get_self()`
 
@@ -328,7 +371,7 @@ $ cleos push action eosio.yield claim '[myprotocol, myreceiver]' -p myprotocol
 - `{name} protocol` - protocol
 - `{name} category` - protocol category
 - `{name} receiver` - receiver of rewards
-- `{extended_asset} claimed` - claimed rewards
+- `{asset} claimed` - claimed rewards
 
 ### Example
 
@@ -337,15 +380,15 @@ $ cleos push action eosio.yield claim '[myprotocol, myreceiver]' -p myprotocol
     "protocol": "myprotocol",
     "category": "dexes",
     "receiver": "myreceiver",
-    "claimed": {"contract": "eosio.token", "quantity": "1.5500 EOS"}
+    "claimed":"1.5500 EOS"
 }
 ```
 
 ## ACTION `report`
 
-- **authority**: `oracle.yield`
+> Generates a report of the current TVL from the {{protocol}} protocol.
 
-Report TVL from oracle
+- **authority**: `oracle.yield`
 
 ### params
 
@@ -363,7 +406,7 @@ $ cleos push action eosio.yield report '[myprotocol, "2022-05-13T00:00:00", 600,
 
 ## ACTION `rewardslog`
 
-> Rewards logging
+> Generates a log when rewards are generated from reports.
 
 - **authority**: `get_self()`
 
@@ -390,5 +433,127 @@ $ cleos push action eosio.yield report '[myprotocol, "2022-05-13T00:00:00", 600,
     "usd": "300000.0000 USD",
     "rewards": "2.5500 EOS",
     "balance": "10.5500 EOS"
+}
+```
+
+## ACTION `statuslog`
+
+> Generates a log when a protocol's status is modified.
+
+- **authority**: `get_self()`
+
+### params
+
+- `{name} protocol` - primary protocol contract
+- `{name} status="pending"` - status (`pending/active/denied`)
+
+### example
+
+```json
+{
+    "protocol": "myprotocol",
+    "status": "active",
+}
+```
+
+## ACTION `contractslog`
+
+> Generates a log when a protocol's contracts are modified.
+
+- **authority**: `get_self()`
+
+### params
+
+- `{name} protocol` - primary protocol contract
+- `{set<name>} contracts.eos` - additional supporting EOS contracts
+- `{set<string>} contracts.evm` - additional supporting EVM contracts
+
+### example
+
+```json
+{
+    "protocol": "myprotocol",
+    "contracts": ["myprotocol", "mytreasury"],
+    "evm": ["0x2f9ec37d6ccfff1cab21733bdadede11c823ccb0"]
+}
+```
+
+## ACTION `categorylog`
+
+> Generates a log when a protocol's category is modified.
+
+- **authority**: `get_self()`
+
+### params
+
+- `{name} protocol` - primary protocol contract
+- `{name} category` - protocol category (ex: `dexes/lending/staking`)
+
+### example
+
+```json
+{
+    "protocol": "myprotocol",
+    "category": "dexes"
+}
+```
+
+## ACTION `createlog`
+
+> Generates a log when a protocol is created.
+
+- **authority**: `get_self()`
+
+### params
+
+- `{name} protocol` - primary protocol contract
+- `{name} category` - protocol category (dexes/lending/yield)
+- `{map<string, string>} metadata` - metadata
+
+### example
+
+```json
+{
+    "protocol": "myprotocol",
+    "category": "dexes",
+    "metadata": [{"key": "name", "value": "My Protocol"}, {"key": "website", "value": "https://myprotocol.com"}]
+}
+```
+
+## ACTION `eraselog`
+
+> Generates a log when a protocol is erased.
+
+- **authority**: `get_self()`
+
+### params
+
+- `{name} protocol` - primary protocol contract
+
+### example
+
+```json
+{
+    "protocol": "myprotocol"
+}
+```
+
+## ACTION `metadatalog`
+
+> When protocol metadata is modified
+
+- **authority**: `get_self()`
+
+### params
+
+- `{name} protocol` - primary protocol contract
+- `{map<string, string>} metadata` - metadata
+
+### example
+
+```json
+{
+    "protocol": "myprotocol",
+    "metadata": [{"key": "name", "value": "My Protocol"}, {"key": "website", "value": "https://myprotocol.com"}]
 }
 ```

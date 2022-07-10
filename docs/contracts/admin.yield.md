@@ -1,8 +1,12 @@
 # Yield+ Admin
 
-# Overview
+## Overview
 
 Admin account for Yield+ on-notification events
+
+## Audits
+
+- <a href=""><img style={{"vertical-align": "middle", height: "30px"}} src="https://user-images.githubusercontent.com/550895/132641907-6425e632-1b1b-4015-9b84-b7f26a25ec58.png" /> Sentnl Audit</a> (2022-??)
 
 ## Actions
 
@@ -15,7 +19,7 @@ Admin account for Yield+ on-notification events
 
 ```bash
 # set metakey
-$ cleos push action admin.yield setmetakey '[url, true, "Protocol URL"]' -p admin.yield
+$ cleos push action admin.yield setmetakey '[website, true, "Protocol website"]' -p admin.yield
 
 # set category
 $ cleos push action admin.yield setcategory '[dexes, "Protocols where you can swap/trade cryptocurrency"]' -p admin.yield
@@ -34,6 +38,7 @@ $ cleos push action admin.yield setcategory '[dexes, "Protocols where you can sw
 ## TABLE `metakeys`
 
 - `{name} key` - metadata key
+- `{name} type` - value type (ex: string/boolean/ipfs/url)
 - `{bool} required` - is required (true/false)
 - `{string} description` - metadata description
 
@@ -42,6 +47,7 @@ $ cleos push action admin.yield setcategory '[dexes, "Protocols where you can sw
 ```json
 {
     "key": "name",
+    "type": "string",
     "required": true,
     "description": "Name of protocol"
 }
@@ -70,13 +76,14 @@ $ cleos push action admin.yield setcategory '[dexes, "Protocols where you can sw
 ### params
 
 - `{name} key` - metadata key
+- `{name} type` - value type (ex: string/boolean/ipfs/url)
 - `{bool} required` - is required (true/false)
 - `{string} description` - metadata description
 
 ### Example
 
 ```bash
-$ cleos push action admin.yield setmetakey '[url, true, "Protocol URL"]' -p admin.yield
+$ cleos push action admin.yield setmetakey '[website, url, true, "Protocol website"]' -p admin.yield
 ```
 
 ## ACTION `setcategory`
@@ -125,5 +132,5 @@ $ cleos push action admin.yield delcategory '[dexes]' -p admin.yield
 ### Example
 
 ```bash
-$ cleos push action admin.yield delmetakey '[url]' -p admin.yield
+$ cleos push action admin.yield delmetakey '[website]' -p admin.yield
 ```

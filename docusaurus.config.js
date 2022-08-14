@@ -28,19 +28,20 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          routeBasePath: '/', // Serve the docs at the site's root
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/EOS-Nation/eosio.yield-docs/tree/main/docs',
+          //editUrl:
+          //  'https://github.com/EOS-Nation/eosio.yield-docs/tree/main/docs',
         },
-        blog: {
+          blog: false,/**{
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/EOS-Nation/eosio.yield-docs/tree/main/docs',
-        },
+          //editUrl:
+          //  'https://github.com/EOS-Nation/eosio.yield-docs/tree/main/docs',
+        },*/
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -52,19 +53,23 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'EOS Yield+',
+        title: 'EOS Yield+ Docs',
         logo: {
           alt: 'EOS Yield+',
           src: 'img/logo.png',
         },
         items: [
-          {
+          /**{
             type: 'doc',
             docId: 'intro',
             position: 'left',
             label: 'Docs',
-          },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          },*/
+          /**{
+            to: '/blog',
+            label: 'Blog',
+            position: 'left'
+          },*/
           {
             href: 'https://github.com/EOS-Nation/eosio.yield-contracts',
             label: 'GitHub',
@@ -75,7 +80,7 @@ const config = {
       footer: {
         style: 'dark',
         links: [
-          {
+          /**{
             title: 'Docs',
             items: [
               {
@@ -91,7 +96,7 @@ const config = {
                 to: '/docs/category/contracts',
               },
             ],
-          },
+          },*/
           {
             title: 'Community',
             items: [
@@ -116,10 +121,10 @@ const config = {
           {
             title: 'More',
             items: [
-              {
+              /**{
                 label: 'Blog',
                 to: '/blog',
-              },
+              },*/
               {
                 label: 'GitHub',
                 href: 'https://github.com/EOS-Nation/eosio.yield-contracts',

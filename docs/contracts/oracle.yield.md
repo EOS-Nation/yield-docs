@@ -1,82 +1,37 @@
+---
+sidebar_position: 2
+---
+
 # Yield+ Oracle
 
-# Overview
+Reference documentation for the `oracle.yield` contract.
 
-Yield+ Oracle system will be supporting Yield+ Rewards to provide reliable TVL data metrics of DeFi protocols and leveraging decentralized data price feeds from existing oracle providers on EOS mainnet.
+## Overview
 
-# Audits
+The Yield+ Oracle system supports the Yield+ Rewards contract by providing reliable TVL metrics of DeFi protocols by leveraging decentralized data price feeds from existing oracle providers on the EOS mainnet.
 
-- <a href=""><img style={{"vertical-align": "middle", height: "30px"}} src="https://user-images.githubusercontent.com/550895/132641907-6425e632-1b1b-4015-9b84-b7f26a25ec58.png" /> Sentnl Audit</a> (2022-??)
+* TVL oracle registration actions: `regoracle`, `setmetadata`, `setmetakey`, `unregister`
+* TVL oracle work actions: `update`, `updateall`
+* TVL oracle claim actions: `claim`
+* Administrative TVL oracle registration actions: `approve`, `deny`, `addtoken`, `deltoken`
+* Administrative system configuration actions: `init`, `setreward`
+* Logging actions: `updatelog`, `claimlog`, `rewardslog`
 
-## Actions
+This contract has been audited by Sentnl.
 
-- Add supported tokens
-- Compute TVL protocol
-- Report TVL to Rewards
+## Tables
 
-## Quickstart
+### TABLE `config`
 
-### `ORACLE` (TVL Oracle)
+This table contains the global configuration parameters for the Yield+ TVL oracle system.
 
-```bash
-# register oracle
-$ cleos push action oracle.yield regoracle '[myoracle, [{"key": "url", "value": "https://myoracle.com"}]]' -p myoracle
+**Fields**
 
-# update all (once approved)
-$ cleos push action oracle.yield updateall '[myoracle, 20]' -p myoracle
-
-# claim oracle rewards
-$ cleos push action oracle.yield claim '[myoracle, null]' -p myoracle
-```
-
-### `ADMIN` (Operators)
-
-```bash
-# approve oracle
-$ cleos push action oracle.yield approve '[oracle]' -p admin.yield
-
-# deny oracle
-$ cleos push action oracle.yield deny '[oracle]' -p admin.yield
-
-# add token
-$ cleos push action oracle.yield addtoken '["4,EOS", "eosio.token", 1, "eosusd"]' -p oracle.yield
-
-# delete token
-cleos push action oracle.yield deltoken '["EOS"]' -p oracle.yield
-```
-
-## Table of Content
-
-- [TABLE `config`](#table-config)
-- [TABLE `tokens`](#table-tokens)
-- [TABLE `periods`](#table-periods)
-- [TABLE `oracles`](#table-oracles)
-- [ACTION `init`](#action-init)
-- [ACTION `addtoken`](#action-addtoken)
-- [ACTION `deltoken`](#action-deltoken)
-- [ACTION `setreward`](#action-setreward)
-- [ACTION `regoracle`](#action-regoracle)
-- [ACTION `unregister`](#action-unregister)
-- [ACTION `setmetadata`](#action-setmetadata)
-- [ACTION `setmetakey`](#action-setmetakey)
-- [ACTION `approve`](#action-approve)
-- [ACTION `deny`](#action-deny)
-- [ACTION `update`](#action-update)
-- [ACTION `updateall`](#action-updateall)
-- [ACTION `updatelog`](#action-updatelog)
-- [ACTION `claim`](#action-claim)
-- [ACTION `claimlog`](#action-claimlog)
-- [ACTION `rewardslog`](#action-rewardslog)
-
-## TABLE `config`
-
-### params
-
-- `{extended_asset} reward_per_update` - reward per update (ex: "0.0200 EOS")
+- `{extended_asset} reward_per_update` - reward per update (e.g. `0.0200 EOS`)
 - `{name} yield_contract` - Yield+ core contract
 - `{name} admin_contract` - Yield+ admin contract
 
-### example
+**Example**
 
 ```json
 {
@@ -86,17 +41,19 @@ cleos push action oracle.yield deltoken '["EOS"]' -p oracle.yield
 }
 ```
 
-## TABLE `tokens`
+### TABLE `tokens`
 
-### params
+This table specifies the tokens supported by the Yield+ TVL oracle system.
 
-- `{symbol} sym` - (primary key) token symbol
-- `{name} contract` - token contract
-- `{uint64_t} [defibox_oracle_id=null]` - (optional) Defibox oracle ID
-- `{name} [delphi_oracle_id=null]` - (optional) Delphi oracle ID
-- `{uint64_t} [extra_oracle_id=null]` - (optional) extra oracle ID
+**Fields**
 
-### example
+- `{symbol} sym` - Token symbol (primary key)
+- `{name} contract` - Token contract
+- `{uint64_t} [defibox_oracle_id=null]` - Defibox oracle ID (optional)
+- `{name} [delphi_oracle_id=null]` - Delphi oracle ID (optional)
+- `{uint64_t} [extra_oracle_id=null]` - Extra oracle ID (optional)
+
+**Example**
 
 ```json
 {
@@ -108,23 +65,27 @@ cleos push action oracle.yield deltoken '["EOS"]' -p oracle.yield
 }
 ```
 
-## TABLE `periods`
+### TABLE `periods`
 
-- scope: `{name} protocol`
+This table contains the TVL reports for each monitored protocol.
 
-### params
+**Scope**
 
-- `{time_point_sec} period` - (primary key) period at time
-- `{name} protocol` - protocol contract
-- `{name} category` - protocol category
-- `{set<name>} contracts.eos` - additional supporting EOS contracts
-- `{set<string>} contracts.evm` - additional supporting EVM contracts
-- `{vector<asset>} balances` - asset balances
-- `{vector<asset>} prices` - currency prices
-- `{asset} tvl` - reported TVL averaged value in EOS
-- `{asset} usd` - reported TVL averaged value in USD
+- `{name} protocol` - Filters by the protocol (via its main contract name)
 
-### example
+**Fields**
+
+- `{time_point_sec} period` - Period at time (primary key)
+- `{name} protocol` - Protocol main contract
+- `{name} category` - Protocol category
+- `{set<name>} contracts.eos` - Additional supporting EOS contracts
+- `{set<string>} contracts.evm` - Additional supporting EVM contracts
+- `{vector<asset>} balances` - Asset balances
+- `{vector<asset>} prices` - Currency prices
+- `{asset} tvl` - Reported TVL averaged value in EOS
+- `{asset} usd` - Reported TVL averaged value in USD
+
+**Example**
 
 ```json
 {
@@ -139,19 +100,21 @@ cleos push action oracle.yield deltoken '["EOS"]' -p oracle.yield
 }
 ```
 
-## TABLE `oracles`
+### TABLE `oracles`
 
-### params
+This table lists all of the registered TVL oracles.
 
-- `{name} oracle` - oracle account
-- `{name} status="pending"` - status (`pending/active/denied`)
-- `{extended_asset} balance` - balance available to be claimed
-- `{map<string, string} metadata` - metadata
-- `{time_point_sec} created_at` - created at time
-- `{time_point_sec} updated_at` - updated at time
-- `{time_point_sec} claimed_at` - claimed at time
+**Fields**
 
-### example
+- `{name} oracle` - TVL oracle account
+- `{name} status="pending"` - Oracle registration status (`pending`, `active`, `denied`)
+- `{extended_asset} balance` - Balance available to be claimed
+- `{map<string, string} metadata` - TVL oracle metadata
+- `{time_point_sec} created_at` - Created at time
+- `{time_point_sec} updated_at` - Last update time 
+- `{time_point_sec} claimed_at` - Last claim time
+
+**Example**
 
 ```json
 {
@@ -165,230 +128,260 @@ cleos push action oracle.yield deltoken '["EOS"]' -p oracle.yield
 }
 ```
 
-## ACTION `init`
+## Actions
 
-> Initializes the Yield+ oracle contract
+### ACTION `init`
 
-- **authority**: `get_self()`
+Initializes the Yield+ Oracle contract.
 
-### params
+**Authority**
+
+- `get_self()`
+
+**Parameters**
 
 - `{extended_symbol} rewards` - Yield+ oracle rewards token
 - `{name} yield_contract` - Yield+ core contract
 - `{name} admin_contract` - Yield+ admin contract
 
-### Example
+**Example**
 
 ```bash
 $ cleos push action oracle.yield init '[["4,EOS", "eosio.token"], rewards.yield, admin.yield]' -p oracle.yield
 ```
 
 
-## ACTION `addtoken`
+### ACTION `addtoken`
 
-- **authority**: `get_self()`
+Adds a token as a supported asset.
 
-> Add {{symcode}} token as supported asset.
+**Authority**
 
-### params
+- `get_self()`
 
-- `{symbol_code} symcode` - token symbol code
-- `{name} contract` - token contract
-- `{uint64_t} [defibox_oracle_id=""]` - (optional) Defibox oracle ID
-- `{name} [delphi_oracle_id=""]` - (optional) Delphi oracle ID
+**Parameters**
 
-### example
+- `{symbol_code} symcode` - Token symbol code
+- `{name} contract` - Token contract
+- `{uint64_t} [defibox_oracle_id=""]` - Defibox oracle ID (optional)
+- `{name} [delphi_oracle_id=""]` - Delphi oracle ID (optional)
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield addtoken '["EOS", "eosio.token", 1, "eosusd"]' -p oracle.yield
 ```
 
-## ACTION `deltoken`
+### ACTION `deltoken`
 
-- **authority**: `get_self()`
+Removes a token as supported asset.
 
-> Delete {{symcode}} token as supported asset
+**Authority**
 
-### params
+- `get_self()`
 
-- `{symbol_code} symcode` - token symbol code
+**Parameters**
 
-### example
+- `{symbol_code} symcode` - Token symbol code
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield deltoken '["EOS"]' -p oracle.yield
 ```
 
-## ACTION `setreward`
+### ACTION `setreward`
 
-> Set oracle rewards
+Sets oracle rewards.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{asset} reward_per_update` - reward per update
+**Parameters**
 
-### Example
+- `{asset} reward_per_update` - Reward per update
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield setreward '["0.0200 EOS"]' -p oracle.yield
 ```
 
-## ACTION `regoracle`
+### ACTION `regoracle`
 
-> Registers the {{oracle}} oracle with the Yield+ oracle contract
+Submits a registration request for a TVL oracle to the Yield+ Oracle contract.
 
-- **authority**: `oracle`
+**Authority**
 
-### params
+- `oracle`
 
-- `{name} oracle` - oracle account
-- `{map<string, string} metadata` - metadata
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account
+- `{map<string, string} metadata` - Oracle metadata
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield regoracle '[myoracle, [{"key": "url", "value": "https://myoracle.com"}]]' -p myoracle
 ```
 
-## ACTION `unregister`
+### ACTION `unregister`
 
-> Unregisters the {{oracle}} oracle from the Yield+ oracle contract
+Unregisters a TVL oracle from the Yield+ Oracle contract.
 
-- **authority**: `oracle`
+**Authority**
 
-### params
+- `oracle`
 
-- `{name} oracle` - oracle account
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield unregister '[myoracle]' -p myoracle
 ```
 
-## ACTION `setmetadata`
+### ACTION `setmetadata`
 
-> Set metadata for the {{oracle}} oracle
+Sets the metadata of a registered TVL oracle.
 
-- **authority**: `oracle` OR `admin.yield`
+**Authority**
 
-### params
+- `oracle`
+-``admin.yield`
 
-- `{name} oracle` - oracle main contract
-- `{map<name, string>} metadata` - (optional) key/value
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account
+- `{map<name, string>} metadata` - Oracle metadata (optional)
+
+**Example**
 
 ```bash
 $ cleos push action eosio.oracle setmetadata '[myoracle, [{"key": "website", "value":"https://myoracle.com"}]]' -p myoracle
 ```
 
-## ACTION `setmetakey`
+### ACTION `setmetakey`
 
-> Set specific metadata key-value pairs
+Sets a specific metadata key-value pair.
 
-- **authority**: `oracle` OR `admin.yield`
+**Authority**
 
-### params
+- `oracle`
+- `admin.yield`
 
-- `{name} oracle` - oracle main contract
-- `{name} key` - metakey (ex: name/website/description)
-- `{string} [value=null]` - (optional) metakey value (if empty, will erase metakey)
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account
+- `{name} key` - Metakey (e.g.: `name`, `website`, `description`)
+- `{string} [value=null]` - Metakey value (if empty, will erase metakey)
+
+**Example**
 
 ```bash
 $ cleos push action eosio.oracle setmetakey '[myoracle, website, "https://myoracle.com"]' -p myoracle
 ```
 
-## ACTION `approve`
+### ACTION `approve`
 
-> Approve the {{oracle}} oracle for Yield+ rewards
+Approves a TVL oracle registration.
 
-- **authority**: `admin.yield`
+**Authority**
 
-### params
+- `admin.yield`
 
-- `{name} oracle` - oracle account to approve
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield approve '[myoracle]' -p admin.yield
 ```
 
-## ACTION `deny`
+### ACTION `deny`
 
-> Deny the {{oracle}} oracle for Yield+ rewards
+Deny a TVL oracle registration.
 
-- **authority**: `admin.yield`
+**Authority**
 
-### params
+- `admin.yield`
 
-- `{name} oracle` - oracle account to deny
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield deny '[myoracle]' -p admin.yield
 ```
 
-## ACTION `update`
+### ACTION `update`
 
-> Update TVL for a specific protocol
+Update TVL values for a specific protocol.
 
-- **authority**: `oracle`
+**Authority**
 
-### params
+- `oracle`
 
-- `{name} oracle` - oracle account (must be approved)
-- `{name} protocol` - protocol account to update
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account (must be approved)
+- `{name} protocol` - Protocol account to update
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield update '[myoracle, myprotocol]' -p myoracle
 ```
 
-## ACTION `updateall`
+### ACTION `updateall`
 
-> Update the TVL for all protocols
+Update the TVL for any number of protocols.
 
-- **authority**: `oracle`
+**Authority**
 
-### params
+- `oracle`
 
-- `{name} oracle` - oracle account (must be approved)
-- `{uint16_t} [max_rows=20]` - (optional) maximum rows to process
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account (must be approved)
+- `{uint16_t} [max_rows=20]` - Maximum rows to process (optional)
+
+**Example**
 
 ```bash
 $ cleos push action oracle.yield updateall '[myoracle, 20]' -p myoracle
 ```
 
-## ACTION `updatelog`
+### ACTION `updatelog`
 
-> Generates a log when an oracle updates its smart contracts
+Generates a log when a TVL oracle updates a protocol.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} oracle` - oracle initiated update
-- `{name} protocol` - protocol updated
-- `{name} category` - protocol category
+**Parameters**
+
+- `{name} oracle` - TVL oracle that performed the update
+- `{name} protocol` - Protocol updated
+- `{name} category` - Orotocol category
 - `{set<name>} contracts` - EOS contracts
 - `{set<string>} evm` - EVM contracts
-- `{time_point_sec} period` - time period
-- `{vector<asset>} balances` - balances in all contracts
-- `{vector<asset>} prices` - prices of assets
-- `{asset} tvl` - overall TVL
-- `{asset} usd` - overall TVL in USD
+- `{time_point_sec} period` - Time period
+- `{vector<asset>} balances` - Balances in all contracts
+- `{vector<asset>} prices` - Prices of assets
+- `{asset} tvl` - Overall TVL
+- `{asset} usd` - Overall TVL in USD
 
-### Example
+**Example**
 
 ```json
 {
@@ -405,41 +398,49 @@ $ cleos push action oracle.yield updateall '[myoracle, 20]' -p myoracle
 }
 ```
 
-## ACTION `claim`
+### ACTION `claim`
 
-> Claims Yield+ rewards for an oracle
+Claims rewards for a TVL oracle.
 
-- **authority**: `oracle`
+**Authority**
 
-### params
+- `oracle`
 
-- `{name} oracle` - oracle
-- `{name} [receiver=""]` - (optional) receiver of rewards (default=oracle)
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account
+- `{name} [receiver=""]` - Rewards receiver (default: `oracle`)
+
+**Example**
+
+Send rewards to `myoracle`:
 
 ```bash
 $ cleos push action oracle.yield claim '[myoracle, null]' -p myoracle
-//=> rewards sent to myoracle
-
-$ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
-//=> rewards sent to myreceiver
 ```
 
-## ACTION `claimlog`
+Send rewards to `myreceiver`:
 
-> Generates a log when Yield+ rewards are claimed.
+```bash
+$ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
+```
 
-- **authority**: `get_self()`
+### ACTION `claimlog`
 
-### params
+Generates a log when a TVL oracle claims rewards.
 
-- `{name} oracle` - oracle
-- `{name} [category=oracle]` - oracle category type
-- `{name} receiver` - receiver of rewards
-- `{asset} claimed` - claimed rewards
+**Authority**
 
-### Example
+- `get_self()`
+
+**Parameters**
+
+- `{name} oracle` - TVL oracle account
+- `{name} [category=oracle]` - Oracle category type
+- `{name} receiver` - Rewards receiver
+- `{asset} claimed` - Rewards claimed
+
+**Example**
 
 ```json
 {
@@ -450,18 +451,20 @@ $ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
 }
 ```
 
-## ACTION `statuslog`
+### ACTION `statuslog`
 
-> Generates a log when oracle status is modified.
+Generates a log when the status of a TVL oracle's registration is modified.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} oracle` - oracle account
-- `{name} status="pending"` - status (`pending/active/denied`)
+**Parameters**
 
-### example
+- `{name} oracle` - TVL oracle account
+- `{name} status="pending"` - Oracle status (`pending`, `active`, `denied`)
+
+**Example**
 
 ```json
 {
@@ -470,19 +473,21 @@ $ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
 }
 ```
 
-## ACTION `createlog`
+### ACTION `createlog`
 
-> Generates a log when an oracle is created in the Yield+ oracle contract.
+Generates a log when a TVL oracle is registered in the Yield+ Oracle contract.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} oracle` - oracle account
-- `{name} [category=oracle]` - oracle category type
-- `{map<string, string>} metadata` - metadata
+**Parameters**
 
-### example
+- `{name} oracle` - TVL oracle account
+- `{name} [category=oracle]` - Oracle category type
+- `{map<string, string>} metadata` - Oracle metadata
+
+**Example**
 
 ```json
 {
@@ -492,17 +497,19 @@ $ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
 }
 ```
 
-## ACTION `eraselog`
+### ACTION `eraselog`
 
-> Generates a log when an oracle is erased from the Yield+ oracle contract.
+Generates a log when a TVL oracle is erased from the Yield+ Oracle contract.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} oracle` - oracle account
+**Parameters**
 
-### example
+- `{name} oracle` - TVL oracle account
+
+**Example**
 
 ```json
 {
@@ -510,18 +517,20 @@ $ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
 }
 ```
 
-## ACTION `metadatalog`
+### ACTION `metadatalog`
 
-> Generates a log when oracle metadata is modified.
+Generates a log when a TVL oracle has its metadata modified.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} oracle` - oracle account
-- `{map<string, string>} metadata` - metadata
+**Parameters**
 
-### example
+- `{name} oracle` - TVL oracle account
+- `{map<string, string>} metadata` - Oracle metadata
+
+**Example**
 
 ```json
 {
@@ -530,19 +539,21 @@ $ cleos push action oracle.yield claim '[myoracle, myreceiver]' -p myoracle
 }
 ```
 
-## ACTION `rewardslog`
+### ACTION `rewardslog`
 
-> Generates a log when rewards are generated from update.
+Generates a log when rewards are generated for a TVL oracle for protocol update work performed.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} oracle` - oracle
-- `{asset} rewards` - Oracle push reward
-- `{asset} balance` - current claimable balance
+**Parameters**
 
-### Example
+- `{name} oracle` - TVL oracle account
+- `{asset} rewards` - Rewards generated for the oracle
+- `{asset} balance` - Current total claimable rewards balance for the oracle
+
+**Example**
 
 ```json
 {

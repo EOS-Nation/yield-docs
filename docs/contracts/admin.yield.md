@@ -1,48 +1,34 @@
+---
+sidebar_position: 3
+---
+
 # Yield+ Admin
+
+Reference documentation for the `admin.yield` contract.
 
 ## Overview
 
-Admin account for Yield+ on-notification events
+This contract provides some administrative actions that the Yield+ admins can invoke to manage the Yield+ system.
 
-## Audits
+* Managing metadata key definitions: `setmetakey`, `delmetakey`
+* Managing project category definitions: `setcategory`, `delcategory`
 
-- <a href=""><img style={{"vertical-align": "middle", height: "30px"}} src="https://user-images.githubusercontent.com/550895/132641907-6425e632-1b1b-4015-9b84-b7f26a25ec58.png" /> Sentnl Audit</a> (2022-??)
+This contract has been audited by Sentnl.
 
-## Actions
+## Tables
 
-- Checks protocol metadata
-- Checks category value
+### TABLE `metakeys`
 
-## Quickstart
+This table contains all valid metadata keys that can be specified as the metadata attached to a protocol's registration application to Yield+.
 
-### `ADMIN` (Operators)
+**Fields**
 
-```bash
-# set metakey
-$ cleos push action admin.yield setmetakey '[website, true, "Protocol website"]' -p admin.yield
+- `{name} key` - Metadata key
+- `{name} type` - Value type (e.g.: `string`, `boolean`, `ipfs`, `url`, ...)
+- `{bool} required` - Determines if this is a required metadata key
+- `{string} description` - Description of this metadata key
 
-# set category
-$ cleos push action admin.yield setcategory '[dexes, "Protocols where you can swap/trade cryptocurrency"]' -p admin.yield
-```
-
-## Table of Content
-
-- [TABLE `metakeys`](#table-metakeys)
-- [TABLE `categories`](#table-categories)
-- [ACTION `setmetakey`](#action-setmetakey)
-- [ACTION `setcategory`](#action-setcategory)
-- [ACTION `delmetakey`](#action-delmetakey)
-- [ACTION `delcategory`](#action-delcategory)
-
-
-## TABLE `metakeys`
-
-- `{name} key` - metadata key
-- `{name} type` - value type (ex: string/boolean/ipfs/url)
-- `{bool} required` - is required (true/false)
-- `{string} description` - metadata description
-
-### example
+**Example**
 
 ```json
 {
@@ -53,12 +39,16 @@ $ cleos push action admin.yield setcategory '[dexes, "Protocols where you can sw
 }
 ```
 
-## TABLE `categories`
+### TABLE `categories`
 
-- `{name} category` - category [metadata.type] value
-- `{string} description` - category description
+This table contains a list of all valid protocol categories which can be specified in a protocol's registration application to Yield+.
 
-### example
+**Fields**
+
+- `{name} category` - Name of the protocol category
+- `{string} description` - Description of the protocol category
+
+**Example**
 
 ```json
 {
@@ -67,69 +57,79 @@ $ cleos push action admin.yield setcategory '[dexes, "Protocols where you can sw
 }
 ```
 
-## ACTION `setmetakeys`
+## Actions
 
-> Set metakey
+### ACTION `setmetakey`
 
-- **authority**: `get_self()`
+Sets a metakey.
 
-### params
+**Authority**
 
-- `{name} key` - metadata key
-- `{name} type` - value type (ex: string/boolean/ipfs/url)
-- `{bool} required` - is required (true/false)
-- `{string} description` - metadata description
+- `get_self()`
 
-### Example
+**Parameters**
+
+- `{name} key` - Metadata key
+- `{name} type` - Value type (e.g.: `string`, `boolean`, `ipfs`, `url`, ...)
+- `{bool} required` - Determines if this is a required metadata key
+- `{string} description` - Description of this metadata key
+
+**Example**
 
 ```bash
 $ cleos push action admin.yield setmetakey '[website, url, true, "Protocol website"]' -p admin.yield
 ```
 
-## ACTION `setcategory`
+### ACTION `setcategory`
 
-> Set category
+Sets a protocol category.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} category` - category
-- `{string} description` - category description
+**Parameters**
 
-### Example
+- `{name} category` - Name of the protocol category
+- `{string} description` - Description of the protocol category
+
+**Example**
 
 ```bash
 $ cleos push action admin.yield setcategory '[dexes, "Protocols where you can swap/trade cryptocurrency"]' -p admin.yield
 ```
 
-## ACTION `delcategory`
+### ACTION `delcategory`
 
-> Delete category
+Deletes a prrotocol category.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} category` - category
+**Parameters**
 
-### Example
+- `{name} category` - Name of the protocol category to delete
+
+**Example**
 
 ```bash
 $ cleos push action admin.yield delcategory '[dexes]' -p admin.yield
 ```
 
-## ACTION `delmetakeys`
+### ACTION `delmetakey`
 
-> Delete metakey
+Deletes a metakey.
 
-- **authority**: `get_self()`
+**Authority**
 
-### params
+- `get_self()`
 
-- `{name} key` - metadata key
+**Parameters**
 
-### Example
+- `{name} key` - Metadata key to delete
+
+**Example**
 
 ```bash
 $ cleos push action admin.yield delmetakey '[website]' -p admin.yield

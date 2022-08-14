@@ -1,0 +1,8 @@
+{
+  "label": "User Guide",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+      "description": "This section guides DeFi projects through interacting with the Yield+ system."
+  }
+}

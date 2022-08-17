@@ -12,21 +12,21 @@ This section shows how to sign up to Yield+.
 
 A smart contract can create custom permissions for its account, in addition to the default `owner` and `active` permissions. This allows the smart contract to have dedicated authorization keys that have less power that the keys assigned to the default permissions. To register your protocol's smart contracts in the Yield+ system, it is likely that you will want to have a custom permission set up on each that allows them to interact with the Yield+ core contract (`eosio.yield`) and nothing else.
 
-The following example command creates a custom `yieldplus` permission (you can call it whatever you want) for a contract account `protocol`, and assigns a public key to it (replace `<PUBLIC_KEY>` with a valid public key value).
+The following example command creates a custom `yield` permission (you can call it whatever you want) for a contract account `myprotocol`, and assigns a public key to it (replace `<PUBLIC_KEY>` with a valid public key value).
 
 ```bash
-cleos set account permission protocol yieldplus <PUBLIC_KEY>
+cleos set account permission myprotocol yield <PUBLIC_KEY>
 ```
 
-Next, the example command below configures the permission `yieldplus` to allow the `protocol` contract to invoke any (`""`) actions on the `eosio.yield` contract.
+Next, the example command below configures the permission `yield` to allow the `myprotocol` contract to invoke any (`""`) actions on the `eosio.yield` contract.
 
 ```bash
-cleos set action permission protocol eosio.yield "" yieldplus
+cleos set action permission myprotocol eosio.yield "" yield
 ```
 
-Once this is done, you will be able to use the public key you specified to sign authorizations on behalf of `protocol@yieldplus`, where `protocol` is the name of your contract account, and `yieldplus` is the name you gave to the custom permission. In the remainder of the command-line `cleos` examples in this guide, you would then replace the `-p protocol` authorization argument with `-p protocol@yieldplus`, as you would not be selecting the default `active` permission to sign the action.
+Once this is done, you will be able to use the public key you specified to sign authorizations on behalf of `myprotocol@yield`, where `myprotocol` is the name of your contract account, and `yield` is the name you gave to the custom permission. In the remainder of the command-line `cleos` examples in this guide, you would then replace the `-p myprotocol` authorization argument with `-p myprotocol@yield`, as you would not be selecting the default `active` permission to sign the action.
 
-Setting up this custom permission will also be of use when registering through the Web3 portal. In that case, store the custom account permission's private key in the wallet software that you are going to use to register through the Web3 portal, and select the custom permission (e.g. `yieldplus`) of your protocol's account when your wallet's prompt to sign the transaction appears.
+Setting up this custom permission will also be of use when registering through the Web3 portal. In that case, store the custom account permission's private key in the wallet software that you are going to use to register through the Web3 portal, and select the custom permission (e.g. `yield`) of your protocol's account when your wallet's prompt to sign the transaction appears.
 
 > **_NOTE_:** The example above assigns a single key to control the custom permission. You can create a more complex authorization structure for your new permission, but how to do so is out of this guide's scope.
 
@@ -55,10 +55,10 @@ First, you need to invoke the `regprotocol` action on the `eosio.yield` contract
 Here's an example (for readability, this example doesn't include all the required metadata keys):
 
 ```bash
-cleos push action eosio.yield regprotocol '[protocol, mycategory, [{"key": "name", "value": "My Protocol"}, {"key": "website", "value": "https://myprotocol.com"}]]' -p protocol
+cleos push action eosio.yield regprotocol '[myprotocol, mycategory, [{"key": "name", "value": "My Protocol"}, {"key": "website", "value": "https://myprotocol.com"}]]' -p myprotocol
 ```
 
-In the above example, `protocol` is the account name of what you consider to be your protocol's main smart contract. It can be any one of your contracts; just keep in mind which one you have chosen to be the main one. The second argument to `regprotocol`, which is `mycategory`, has to be substituted with the name of the category of your protocol. And finally, the third argument is a list of `key` and `value` pairs which provides all of the remaining information about the DeFi project being registered.
+In the above example, `myprotocol` is the account name of what you consider to be your protocol's main smart contract. It can be any one of your contracts; just keep in mind which one you have chosen to be the main one. The second argument to `regprotocol`, which is `mycategory`, has to be substituted with the name of the category of your protocol. And finally, the third argument is a list of `key` and `value` pairs which provides all of the remaining information about the DeFi project being registered.
 
 To compose your own, valid `regprotocol` transaction, you will need the list of accepted protocol categories and metadata keys.
 
@@ -105,12 +105,12 @@ This is best done immediately after you perform the first step above, before you
 Here's an example `setcontracts` call:
 
 ```bash
-cleos push action eosio.yield setcontracts '[protocol, [a.protocol, b.protocol]]' -p protocol -p a.protocol -p b.protocol
+cleos push action eosio.yield setcontracts '[myprotocol, [a.myprotocol, b.myprotocol]]' -p myprotocol -p a.myprotocol -p b.myprotocol
 ```
 
-In the example above, `protocol` is the name of the main contract of the protocol being registered (which has been supplied in a previous `regprotocol` call) , and `a.protocol` and `b.protocol` are the names of all the other contracts of that protocol, which haven't been supplied at the time of the `regprotocol` call).
+In the example above, `myprotocol` is the name of the main contract of the protocol being registered (which has been supplied in a previous `regprotocol` call) , and `a.myprotocol` and `b.myprotocol` are the names of all the other contracts of that protocol, which haven't been supplied at the time of the `regprotocol` call).
 
-Note that you have to provide an authorization (i.e. cryptographic signature) for every contract account that you are adding to your registration application. In the example above, there are authorizations (signatures) provided by *all* of the DeFi dApp's contracts, which are mentioned in the `setcontracts` call: the `protocol`, `a.protocol` and `b.protocol` accounts.
+Note that you have to provide an authorization (i.e. cryptographic signature) for every contract account that you are adding to your registration application. In the example above, there are authorizations (signatures) provided by *all* of the DeFi dApp's contracts, which are mentioned in the `setcontracts` call: the `myprotocol`, `a.myprotocol` and `b.myprotocol` accounts.
 
 ### Optional registration actions
 

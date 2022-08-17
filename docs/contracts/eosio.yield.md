@@ -10,9 +10,9 @@ Reference documentation for the `eosio.yield` contract.
 
 This contract provides user and administration interfaces for the Yield+ rewards program.
 
-* Registration actions: `regprotocol`, `setcontracts`, `setevm`, `setmetadata`, `setmetakey`, `unregister`
+* Registration actions: `regprotocol`, `setcontracts`, `setevm`, `setmetadata`, `setmetakey`, `setcategory`, `unregister`
 * Rewards claiming actions: `claim`
-* Administrative registration actions: `approve`, `deny`, `setcategory`
+* Administrative registration actions: `approve`, `deny`
 * Administrative system configuration actions: `init`, `setrate`
 * Inline actions: `report`
 * Logging actions: `claimlog`, `rewardslog`, `statuslog`, `contractslog`, `categorylog`, `createlog`, `eraselog`, `metadatalog`
@@ -288,6 +288,7 @@ Sets the category of a protocol.
 
 **Authority**
 
+- `protocol`
 - `admin.yield`
 
 **Parameters**

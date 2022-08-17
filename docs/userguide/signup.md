@@ -96,6 +96,7 @@ In addition to `regprotocol` and `setcontracts`, there are additional registrati
 
 * `setmetadata` can be used to replace the metadata section of your protocol's metadata record;
 * `setmetakey` can be used to set or change individual keys of your protocol's metadata record;
+* `setcategory` can be used to change the protocol category that you specified during the first registration action;
 * `unregister` can be used to remove your protocol from Yield+;
 * `setevm` can be used to include your protocol's EVM contract addresses, if any, to its registration request.
 

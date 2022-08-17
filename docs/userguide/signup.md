@@ -8,13 +8,35 @@ This section shows how to sign up to Yield+.
 
 > **_NOTE:_** DeFi dApps (projects) are referred to as *protocols* in the Yield+ smart contract code and API, so we will use that particular terminology in this section.
 
+## Registering contracts using custom permissions
+
+A smart contract can create custom permissions for its account, in addition to the default `owner` and `active` permissions. This allows the smart contract to have dedicated authorization keys that have less power that the keys assigned to the default permissions. To register your protocol's smart contracts in the Yield+ system, it is likely that you will want to have a custom permission set up on each that allows them to interact with the Yield+ core contract (`eosio.yield`) and nothing else.
+
+The following example command creates a custom `yieldplus` permission (you can call it whatever you want) for a contract account `protocol`, and assigns a public key to it (replace `<PUBLIC_KEY>` with a valid public key value).
+
+```bash
+cleos set account permission protocol yieldplus <PUBLIC_KEY>
+```
+
+Next, the example command below configures the permission `yieldplus` to allow the `protocol` contract to invoke any (`""`) actions on the `eosio.yield` contract.
+
+```bash
+cleos set action permission protocol eosio.yield "" yieldplus
+```
+
+Once this is done, you will be able to use the public key you specified to sign authorizations on behalf of `protocol@yieldplus`, where `protocol` is the name of your contract account, and `yieldplus` is the name you gave to the custom permission. In the remainder of the command-line `cleos` examples in this guide, you would then replace the `-p protocol` authorization argument with `-p protocol@yieldplus`, as you would not be selecting the default `active` permission to sign the action.
+
+Setting up this custom permission will also be of use when registering through the Web3 portal. In that case, store the custom account permission's private key in the wallet software that you are going to use to register through the Web3 portal, and select the custom permission (e.g. `yieldplus`) of your protocol's account when your wallet's prompt to sign the transaction appears.
+
+> **_NOTE_:** The example above assigns a single key to control the custom permission. You can create a more complex authorization structure for your new permission, but how to do so is out of this guide's scope.
+
 ## Web3 registration process
 
 If your protocol has only one smart contract, then you can use [the Yield+ Web3 portal](https://tokenyield.io/) to register your protocol (click on **Join Yield+** at the top of the page). In that case, just fill in your application using a web browser. You will be required to use your favourite wallet software to cryptographically sign your registration request, proving your ownership of the protocol's contract account.
 
 Even if your protocol has multiple contracts, you still can do some of the registration work through the Web3 interface. Check out the [Using Web3 registration with multiple contracts](signup#using-web3-registration-with-multiple-contracts) section below.
 
-> **_NOTE:_** Do not attempt to register your protocol using a personal account. If you do that, your application will be rejected. 
+> **_NOTE:_** Do not attempt to register your protocol using a personal account. If you do that, your application will be rejected. Refer to [Registering contracts using custom permissions](signup#registering-contracts-using-custom-permissions) for help on configuring a new key on your contract that only allows it to interact with the Yield+ core contract.
 
 ## Registering your protocol using `cleos`
 

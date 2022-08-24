@@ -101,7 +101,7 @@ $ cleos push action admin.yield setcategory '[dexes, "Protocols where you can sw
 
 ### ACTION `delcategory`
 
-Deletes a prrotocol category.
+Deletes a protocol category.
 
 **Authority**
 

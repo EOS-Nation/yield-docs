@@ -79,10 +79,10 @@ And here follows a list of metadata keys. Required keys are in **bold**.
 | **name**          | string      | Name of the protocol (dApp, project).                                         |
 | **description**   | text        | A description of the protocol.                                                |
 | **website**       | url         | Project website URL.                                                          |
-| **logo**          | ipfs        | Link to the project's logo.                                                   |
+| **logo**          | ipfs        | IPFS hash of your project's logo.                                             |
 | **recover**       | string      | [Recover+](https://www.eosrecover.com/) identifier for the project.           |
 | token.code        | name        | Name of your project's token contract account.                                |
-| token.symcode     | symcode     | Symbol of your project's token, in `[precision,symbol]` notation, e.g. `[4,EOS]` |
+| token.symcode     | symcode     | Symcode (symbol and decimal precision) of your project's token (`[precision,symbol]`, e.g. `[4,EOS]`) |
 | cmc               | url         | URL of your project's [CoinMarketCap](https://coinmarketcap.com) listing.     |
 | coingecko         | url         | URL of your project's [CoinGecko](https://coingecko.com) listing.             |
 | dappradar         | url         | URL of your project's [DAppRadar](https://dappradar.com) listing.             |
